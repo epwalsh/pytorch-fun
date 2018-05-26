@@ -92,12 +92,7 @@ def main():
                 actual = LANGS[lang[0].item()]
                 correct = "✓" if guess == actual else "✗ ({:s})".format(actual)
                 print("{:d}: {:s} / {:s} {:s}"
-                      .format(
-                          i,
-                          raw_name,
-                          guess,
-                          correct
-                      ))
+                      .format(i, raw_name, guess, correct))
         print("Epoch loss: {:f}".format(total_loss))
 
 

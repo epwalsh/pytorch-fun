@@ -100,10 +100,11 @@ class CharLSTM(nn.Module):
         hidden = hidden.view(-1).unsqueeze(0)
 
         # Run through linear layer:
-        # `[1 x (output)]`.
+        # `[1 x output_size]`.
         output = self.linear(hidden)
 
-        # Apply softmax.
+        # Apply softmax:
+        # `[1 x output_size]`.
         output = self.softmax(output)
 
         return output

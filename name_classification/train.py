@@ -46,9 +46,9 @@ def main():
     train, char_dict = gather_data()
 
     print("Initializing model...")
-    classifier = CharLSTM(len(char_dict), HIDDEN_SIZE, N_LANGS)
+    model = CharLSTM(len(char_dict), HIDDEN_SIZE, N_LANGS)
 
-    print(classifier(train[0][0]))
+    print(model(train[0][0]))
 
 
 if __name__ == "__main__":

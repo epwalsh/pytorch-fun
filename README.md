@@ -4,6 +4,7 @@ Small, independent PyTorch examples that can be trained within a few minutes on 
 Datasets included, batteries sold separately.
 
 To train an example, just run one of the available `train_*.py` files within the corresponding subdirectory.
+The only requirement is [PyTorch](https://pytorch.org/).
 
 ## List of examples by task type
 

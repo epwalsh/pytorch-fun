@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# encoding: UTF-8
+# pylint: disable=not-callable
 
 """
 Trains the LSTM character-level classifier to the names dataset.
@@ -56,7 +57,7 @@ def gather_data():
         inp = torch.zeros(len(name), n_chars)
         for i, char in enumerate(name):
             inp[i][characters[char]] = 1.
-        tgt = torch.tensor([lang], dtype=torch.long)  # pylint: disable=all
+        tgt = torch.tensor([lang], dtype=torch.long)
         data.append((name, inp, tgt))
 
     return data, characters

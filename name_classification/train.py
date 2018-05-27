@@ -9,12 +9,13 @@ import random
 
 import torch
 
-from models import CharLSTM
+from model import CharLSTM
 
 
 HIDDEN_SIZE = 50
 EPOCHS = 2
-PLOT_EVERY = 1000
+LOG_EVERY = 1000
+
 LANGS = {
     0: "Arabic",
     1: "Chinese",
@@ -58,8 +59,6 @@ def gather_data():
         tgt = torch.tensor([lang], dtype=torch.long)
         data.append((name, inp, tgt))
 
-    random.shuffle(data)
-
     return data, characters
 
 
@@ -74,25 +73,50 @@ def main():
     optimizer = torch.optim.Adam(model.parameters())
 
     print("Training model...")
+    n_examples = len(train)
+
+    # Loop through epochs.
     for iteration in range(EPOCHS):
-        print("Epoch {:d}".format(iteration))
+        print("Epoch {:d}".format(iteration + 1))
+
+        # Shuffle examples.
+        random.shuffle(train)
+
         total_loss = 0
+        running_loss = 0
+
+        # Loop through examples in dataset `train`.
         for i, example in enumerate(train):
+            # Grab next example.
             raw_name, name, lang = example
+
+            # Zero-out the gradient.
             model.zero_grad()
+
+            # Make a forward pass and compute the loss.
             output = model(name)
             loss = criterion(output, lang)
+
+            # Compute gradient and take a step.
             loss.backward()
             optimizer.step()
+
             total_loss += loss
-            if i > 0 and i % PLOT_EVERY == 0:
+            running_loss += loss
+
+            # Print progress.
+            if (i + 1) % LOG_EVERY == 0:
                 _, top_lang_i = output.topk(1)
                 top_lang_i = top_lang_i[0].item()
                 guess = LANGS[top_lang_i]
                 actual = LANGS[lang[0].item()]
                 correct = "✓" if guess == actual else "✗ ({:s})".format(actual)
-                print("{:d}: {:s} / {:s} {:s}"
-                      .format(i, raw_name, guess, correct))
+                print("({:d} / {:d}) Loss: {:.5f}"
+                      .format(i + 1, n_examples, running_loss))
+                print(" {:s} => {:s} {:s}"
+                      .format(raw_name, guess, correct))
+                running_loss = 0
+
         print("Epoch loss: {:f}".format(total_loss))
 
 

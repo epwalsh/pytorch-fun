@@ -56,7 +56,7 @@ def gather_data():
         inp = torch.zeros(len(name), n_chars)
         for i, char in enumerate(name):
             inp[i][characters[char]] = 1.
-        tgt = torch.tensor([lang], dtype=torch.long)
+        tgt = torch.tensor([lang], dtype=torch.long)  # pylint: disable=all
         data.append((name, inp, tgt))
 
     return data, characters

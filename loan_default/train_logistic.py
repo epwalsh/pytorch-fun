@@ -13,7 +13,7 @@ from model import LogisticRegression
 
 
 N_FEATS = 3
-LOG_EVERY = 1000
+LOG_EVERY = 500
 EPOCHS = 5
 
 

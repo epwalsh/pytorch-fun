@@ -6,6 +6,7 @@
 Trains the LSTM character-level classifier to the names dataset.
 """
 
+import argparse
 import random
 
 import torch
@@ -40,7 +41,7 @@ LANGS = {
 N_LANGS = len(LANGS)
 
 
-def gather_data():
+def gather_data(device):
     """Gather raw data and build character dictionary."""
     characters = {}
     raw_data = []
@@ -58,18 +59,25 @@ def gather_data():
         for i, char in enumerate(name):
             inp[i][characters[char]] = 1.
         tgt = torch.tensor([lang], dtype=torch.long)
-        data.append((name, inp, tgt))
+        data.append((name, inp.to(device), tgt.to(device)))
 
     return data, characters
 
 
 def main():
     """Main func to run."""
+    parser = argparse.ArgumentParser(description="Name classification example")
+    parser.add_argument("--cuda", action="store_true")
+
+    opts = parser.parse_args()
+    device = torch.device("cuda" if opts.cuda else "cpu")
+
     print("Gathering data...")
-    train, char_dict = gather_data()
+    train, char_dict = gather_data(device)
 
     print("Initializing model...")
-    model = CharLSTM(len(char_dict), HIDDEN_SIZE, N_LANGS)
+    model = CharLSTM(len(char_dict), HIDDEN_SIZE, N_LANGS).to(device)
+
     criterion = torch.nn.NLLLoss()
     optimizer = torch.optim.Adam(model.parameters())
 
